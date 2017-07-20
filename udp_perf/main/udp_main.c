@@ -91,7 +91,6 @@ void udp_conn(void *pvParameters) {
 
 void app_main(void) {
 	wifi_init_sta();
-
-
+	xTaskCreate(&beat_task, "beat task", 4096, NULL, 4, NULL);
 }
 

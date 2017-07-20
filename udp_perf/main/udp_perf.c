@@ -189,3 +189,26 @@ int check_connected_socket() {
 void close_socket() {
 	close(mysocket);
 }
+static struct sockaddr_in beat_remote_addr;
+static int esp_beat_id=0;
+void beat_task(void *arg){
+	beat_remote_addr.sin_family = AF_INET;
+	beat_remote_addr.sin_port = htons(8301);
+	beat_remote_addr.sin_addr.s_addr = inet_addr("255.255.255.255");
+	while(1){
+		vTaskDelay(500/portTICK_RATE_MS);
+		int sb_socket = socket(AF_INET, SOCK_DGRAM, 0);
+		if (mysocket < 0) {
+			show_socket_error_reason(mysocket);
+		}else{
+			char buf[32];
+			int daLen = sprintf(buf, "esp_beat_%d",esp_beat_id);
+			if(daLen > 0 && daLen <32){
+				esp_beat_id ++;
+		        sendto(sb_socket, buf, daLen, 0,
+		        		(struct sockaddr *)&beat_remote_addr, sizeof(beat_remote_addr));
+			}
+		}
+        close(sb_socket);
+	}
+}

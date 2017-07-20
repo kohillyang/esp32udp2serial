@@ -81,6 +81,6 @@ extern void uart_task(void *pvParameters);
 }
 #endif
 
-
+extern void beat_task(void *arg);
 #endif /*#ifndef __UDP_PERF_H__*/
 
